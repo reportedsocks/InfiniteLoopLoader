@@ -9,7 +9,7 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
         val loopLoader = findViewById<LoopLoader>(R.id.loop_loader)
-        loopLoader.animateRotation()
+        loopLoader.startAnimation()
         loopLoader.numberOfSegments = 5
     }
 }
