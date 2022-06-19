@@ -8,10 +8,41 @@
     tools:context=".MainActivity">
 
     <com.example.lib.LoopLoader
-        android:id="@+id/loop_loader"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:id="@+id/loop_loader1"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"/>
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/loop_loader2"/>
+    <com.example.lib.LoopLoader
+        android:id="@+id/loop_loader2"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/blue"
+        app:activeSegmentColor="@color/yellow"
+        app:passiveSegmentColor="@android:color/holo_orange_dark"
+        app:numberOfSegments="4"
+        app:segmentPaintWidth="70"
+        app:segmentTransformationDuration="500"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/loop_loader1"
+        app:layout_constraintEnd_toStartOf="@id/loop_loader3"/>
+
+    <com.example.lib.LoopLoader
+        android:id="@+id/loop_loader3"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/light_gray"
+        app:activeSegmentColor="@color/black"
+        app:passiveSegmentColor="@android:color/darker_gray"
+        app:rotationDirection="counterclockwise"
+        app:numberOfSegments="8"
+        app:segmentPaintWidth="60"
+        app:maxScale="1.15"
+        app:segmentTransformationDuration="400"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toEndOf="@id/loop_loader2"
+        app:layout_constraintEnd_toEndOf="parent"/>
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>
