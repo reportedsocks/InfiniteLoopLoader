@@ -20,6 +20,7 @@ class LoopLoader: View {
         private const val CIRCLE_TOP = 270f
         private const val TOTAL_DEGREES = 360f
         private const val DEFAULT_SCALE = 1f
+        private const val GAP_BETWEEN_SEGMENTS = 2.5f
     }
 
     var segmentPaintWidth = 100f
@@ -114,9 +115,9 @@ class LoopLoader: View {
 
     override fun onSizeChanged(w: Int, h: Int, oldw: Int, oldh: Int) {
         super.onSizeChanged(w, h, oldw, oldh)
-        horizontalCenter = (width.div(2)).toFloat()
-        verticalCenter = (height.div(2)).toFloat()
-        rectSize = min(width,height) / 3f
+        horizontalCenter = width / 2f
+        verticalCenter = height / 2f
+        rectSize = min(horizontalCenter,verticalCenter) - (segmentPaintWidth / 2 * maxScale)
     }
 
     override fun onMeasure(widthMeasureSpec: Int, heightMeasureSpec: Int) {
@@ -192,7 +193,7 @@ class LoopLoader: View {
     private fun drawSegments(canvas: Canvas, startIndex: Int, startOffset: Float, paint: Paint) {
         var offset = startOffset
         for (i in startIndex .. numberOfSegments step 2) {
-            canvas.drawArc(rect, offset, segmentWidth - 2.5f, false, paint)
+            canvas.drawArc(rect, offset, segmentWidth - GAP_BETWEEN_SEGMENTS, false, paint)
             offset += segmentWidth * 2
         }
     }

@@ -22,7 +22,7 @@
         app:activeSegmentColor="@color/yellow"
         app:passiveSegmentColor="@android:color/holo_orange_dark"
         app:numberOfSegments="4"
-        app:segmentPaintWidth="70"
+        app:segmentPaintWidth="100"
         app:segmentTransformationDuration="500"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toEndOf="@id/loop_loader1"
