@@ -4,10 +4,7 @@ import android.animation.Animator
 import android.animation.AnimatorSet
 import android.animation.ValueAnimator
 import android.content.Context
-import android.graphics.Canvas
-import android.graphics.Color
-import android.graphics.Paint
-import android.graphics.RectF
+import android.graphics.*
 import android.util.AttributeSet
 import android.view.View
 import android.view.animation.AccelerateInterpolator
@@ -21,6 +18,9 @@ class LoopLoader: View {
         private const val TOTAL_DEGREES = 360f
         private const val DEFAULT_SCALE = 1f
         private const val GAP_BETWEEN_SEGMENTS = 2.5f
+        private const val SHADOW_OFFSET = 6f
+        private const val NEGATIVE_SHADOW_OFFSET = 2f
+        private const val BLUR_RADIUS = 4f
     }
 
     var segmentPaintWidth = 100f
@@ -29,10 +29,20 @@ class LoopLoader: View {
             oddSegmentPaint.strokeWidth = value
             field = value
         }
+    var shadowPaintWidth = segmentPaintWidth - BLUR_RADIUS * 2
+        set(value) {
+            shadowPaint.strokeWidth = value
+            field = value
+        }
     var segmentRotationDuration = 700L
     var segmentTransformationDuration = 200L
     var activeSegmentColor = context?.resources?.getColor(R.color.white, context.theme) ?: Color.GRAY
     var passiveSegmentColor = context?.resources?.getColor(R.color.light_gray, context.theme) ?: Color.GRAY
+    var shadowColor = context?.resources?.getColor(R.color.dark_gray, context.theme) ?: Color.GRAY
+        set(value) {
+            shadowPaint.color = value
+            field = value
+        }
     var numberOfSegments = 6
         set(value) {
             if (value % 2 != 0) return  // check for even number
@@ -60,6 +70,13 @@ class LoopLoader: View {
         style = Paint.Style.STROKE
         isAntiAlias = true
         strokeWidth = segmentPaintWidth
+    }
+    private val shadowPaint = Paint().apply {
+        style = Paint.Style.STROKE
+        strokeWidth = shadowPaintWidth
+        color = shadowColor
+        isAntiAlias = true
+        maskFilter = BlurMaskFilter(BLUR_RADIUS, BlurMaskFilter.Blur.NORMAL)
     }
 
     private var segmentWidth = TOTAL_DEGREES / numberOfSegments
@@ -94,6 +111,8 @@ class LoopLoader: View {
 
         if (a.hasValue(R.styleable.LoopLoader_segmentPaintWidth))
             segmentPaintWidth = a.getFloat(R.styleable.LoopLoader_segmentPaintWidth, segmentPaintWidth)
+        if (a.hasValue(R.styleable.LoopLoader_shadowPaintWidth))
+            shadowPaintWidth = a.getFloat(R.styleable.LoopLoader_shadowPaintWidth, shadowPaintWidth)
         if (a.hasValue(R.styleable.LoopLoader_segmentRotationDuration))
             segmentRotationDuration = a.getInt(R.styleable.LoopLoader_segmentRotationDuration, segmentRotationDuration.toInt()).toLong()
         if (a.hasValue(R.styleable.LoopLoader_segmentTransformationDuration))
@@ -102,6 +121,8 @@ class LoopLoader: View {
             activeSegmentColor = a.getColor(R.styleable.LoopLoader_activeSegmentColor, activeSegmentColor)
         if (a.hasValue(R.styleable.LoopLoader_passiveSegmentColor))
             passiveSegmentColor = a.getColor(R.styleable.LoopLoader_passiveSegmentColor, passiveSegmentColor)
+        if (a.hasValue(R.styleable.LoopLoader_shadowColor))
+            shadowColor = a.getColor(R.styleable.LoopLoader_shadowColor, shadowColor)
         if (a.hasValue(R.styleable.LoopLoader_numberOfSegments))
             numberOfSegments = a.getInt(R.styleable.LoopLoader_numberOfSegments, numberOfSegments)
         if (a.hasValue(R.styleable.LoopLoader_maxScale))
@@ -183,16 +204,18 @@ class LoopLoader: View {
     }
 
     private fun drawEvenSegments(canvas: Canvas,  offset: Float) {
-        drawSegments(canvas, 0, offset, evenSegmentPaint)
+        drawSegments(canvas, 0, offset, evenSegmentPaint, isAnimatingEvenSegments)
     }
 
     private fun drawOddSegments(canvas: Canvas,  offset: Float) {
-        drawSegments(canvas, 1, offset, oddSegmentPaint)
+        drawSegments(canvas, 1, offset, oddSegmentPaint, !isAnimatingEvenSegments)
     }
 
-    private fun drawSegments(canvas: Canvas, startIndex: Int, startOffset: Float, paint: Paint) {
+    private fun drawSegments(canvas: Canvas, startIndex: Int, startOffset: Float, paint: Paint, withShadow: Boolean) {
         var offset = startOffset
         for (i in startIndex .. numberOfSegments step 2) {
+            if (withShadow)
+                canvas.drawArc(rect, offset - NEGATIVE_SHADOW_OFFSET, segmentWidth - GAP_BETWEEN_SEGMENTS + SHADOW_OFFSET, false, shadowPaint)
             canvas.drawArc(rect, offset, segmentWidth - GAP_BETWEEN_SEGMENTS, false, paint)
             offset += segmentWidth * 2
         }

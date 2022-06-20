@@ -13,9 +13,10 @@ class MainActivity : AppCompatActivity() {
         val loopLoader1 = findViewById<LoopLoader>(R.id.loop_loader1)
         loopLoader1.startAnimation()
         loopLoader1.numberOfSegments = 5 // wont work
-        loopLoader1.rotationDirection = LoopLoader.RotationDirection.COUNTERCLOCKWISE
-        loopLoader1.segmentPaintWidth = 20f
+        loopLoader1.rotationDirection = LoopLoader.RotationDirection.CLOCKWISE
+        loopLoader1.segmentPaintWidth = 80f
         loopLoader1.segmentRotationDuration = 500
+        loopLoader1.shadowPaintWidth = 80f
         loopLoader1.setBackgroundColor(Color.BLACK)
 
 

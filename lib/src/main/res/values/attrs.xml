@@ -2,10 +2,12 @@
 <resources>
     <declare-styleable name="LoopLoader">
         <attr name="segmentPaintWidth" format="float"/>
+        <attr name="shadowPaintWidth" format="float"/>
         <attr name="segmentRotationDuration" format="integer"/>
         <attr name="segmentTransformationDuration" format="integer"/>
         <attr name="activeSegmentColor" format="color"/>
         <attr name="passiveSegmentColor" format="color"/>
+        <attr name="shadowColor" format="color"/>
         <attr name="numberOfSegments" format="integer"/>
         <attr name="maxScale" format="float"/>
         <attr name="rotationDirection" format="enum">
