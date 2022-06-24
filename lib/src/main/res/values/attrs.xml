@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="LoopLoader">
-        <attr name="ll_segmentPaintWidth" format="float"/>
-        <attr name="ll_shadowPaintWidth" format="float"/>
+        <attr name="ll_segmentPaintWidth" format="dimension"/>
+        <attr name="ll_shadowPaintWidth" format="dimension"/>
         <attr name="ll_segmentRotationDuration" format="integer"/>
         <attr name="ll_segmentTransformationDuration" format="integer"/>
         <attr name="ll_activeSegmentColor" format="color"/>
@@ -14,5 +14,7 @@
             <enum name="clockwise" value="0"/>
             <enum name="counterclockwise" value="1"/>
         </attr>
+        <attr name="ll_innerCircleColor" format="color"/>
+        <attr name="android:background" format="color"/>
     </declare-styleable>
 </resources>
