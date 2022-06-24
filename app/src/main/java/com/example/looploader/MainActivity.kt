@@ -19,9 +19,7 @@ class MainActivity : AppCompatActivity() {
             numberOfSegments = 5 // wont work
             rotationDirection = LoopLoader.RotationDirection.CLOCKWISE
             segmentPaintWidth = 80f
-            segmentRotationDuration = 500
             shadowPaintWidth = 80f
-            activeSegmentColor = Color.CYAN
             setBackgroundColor(Color.BLACK)
             startAnimation()
         }

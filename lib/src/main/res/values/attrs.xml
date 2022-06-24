@@ -1,16 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <declare-styleable name="LoopLoader">
-        <attr name="segmentPaintWidth" format="float"/>
-        <attr name="shadowPaintWidth" format="float"/>
-        <attr name="segmentRotationDuration" format="integer"/>
-        <attr name="segmentTransformationDuration" format="integer"/>
-        <attr name="activeSegmentColor" format="color"/>
-        <attr name="passiveSegmentColor" format="color"/>
-        <attr name="shadowColor" format="color"/>
-        <attr name="numberOfSegments" format="integer"/>
-        <attr name="maxScale" format="float"/>
-        <attr name="rotationDirection" format="enum">
+        <attr name="ll_segmentPaintWidth" format="float"/>
+        <attr name="ll_shadowPaintWidth" format="float"/>
+        <attr name="ll_segmentRotationDuration" format="integer"/>
+        <attr name="ll_segmentTransformationDuration" format="integer"/>
+        <attr name="ll_activeSegmentColor" format="color"/>
+        <attr name="ll_passiveSegmentColor" format="color"/>
+        <attr name="ll_shadowColor" format="color"/>
+        <attr name="ll_numberOfSegments" format="integer"/>
+        <attr name="ll_maxScale" format="float"/>
+        <attr name="ll_rotationDirection" format="enum">
             <enum name="clockwise" value="0"/>
             <enum name="counterclockwise" value="1"/>
         </attr>

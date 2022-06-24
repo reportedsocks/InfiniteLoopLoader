@@ -13,15 +13,16 @@ import kotlin.math.min
 
 class LoopLoader: View {
 
-    companion object {
-        private const val CIRCLE_TOP = 270f
-        private const val TOTAL_DEGREES = 360f
-        private const val DEFAULT_SCALE = 1f
-        private const val GAP_BETWEEN_SEGMENTS = 2.5f
-        private const val SHADOW_OFFSET = 6f
-        private const val NEGATIVE_SHADOW_OFFSET = 2f
-        private const val BLUR_RADIUS = 4f
-    }
+    // constants
+    private val CIRCLE_TOP = 270f
+    private val TOTAL_DEGREES = 360f
+
+    // can turn into styleable variables if needed
+    private val DEFAULT_SCALE = 1f
+    private val GAP_BETWEEN_SEGMENTS = 2.5f
+    private val SHADOW_OFFSET = 6f
+    private val NEGATIVE_SHADOW_OFFSET = 2f
+    private val BLUR_RADIUS = 4f
 
     var segmentPaintWidth = 100f
         set(value) {
@@ -36,9 +37,9 @@ class LoopLoader: View {
         }
     var segmentRotationDuration = 700L
     var segmentTransformationDuration = 200L
-    var activeSegmentColor = context?.resources?.getColor(R.color.white, context.theme) ?: Color.GRAY
-    var passiveSegmentColor = context?.resources?.getColor(R.color.light_gray, context.theme) ?: Color.GRAY
-    var shadowColor = context?.resources?.getColor(R.color.dark_gray, context.theme) ?: Color.GRAY
+    var activeSegmentColor = context.resources.getColor(R.color.white, context.theme)
+    var passiveSegmentColor = context.resources.getColor(R.color.light_gray, context.theme)
+    var shadowColor = context.resources.getColor(R.color.dark_gray, context.theme)
         set(value) {
             shadowPaint.color = value
             field = value
@@ -88,6 +89,14 @@ class LoopLoader: View {
     private var evenOffset = CIRCLE_TOP
     private var oddOffset = CIRCLE_TOP + segmentWidth
 
+    private val evenActiveOffset get() =
+        if (rotationDirection == RotationDirection.CLOCKWISE)
+            evenOffset + offsetRotationModifier else evenOffset - offsetRotationModifier
+
+    private val oddActiveOffset get() =
+        if (rotationDirection == RotationDirection.CLOCKWISE)
+            oddOffset + offsetRotationModifier else oddOffset - offsetRotationModifier
+
     private var offsetRotationModifier = 0f
 
     private var isAnimatingEvenSegments = true
@@ -105,32 +114,53 @@ class LoopLoader: View {
 
     private var animationEndWasCalled = false
 
+    private val rotationAnimator get() = ValueAnimator.ofFloat(0f, segmentWidth * 2).apply {
+        duration = segmentRotationDuration
+        interpolator = AccelerateInterpolator()
+        addUpdateListener {
+            offsetRotationModifier = it.animatedValue as Float
+            invalidate()
+        }
+    }
+
+    private val passiveToActiveColorAnimator get() = ValueAnimator.ofArgb(passiveSegmentColor, activeSegmentColor).apply {
+        duration = segmentTransformationDuration
+        addUpdateListener {
+            actualActiveColor = it.animatedValue as Int
+            invalidate()
+        }
+    }
+
+    private val activeToPassiveColorAnimator get() = ValueAnimator.ofArgb(activeSegmentColor, passiveSegmentColor).apply {
+        duration = segmentTransformationDuration
+        addUpdateListener {
+            actualPassiveColor = it.animatedValue as Int
+            invalidate()
+        }
+    }
+
+    private val scaleAnimator get() = ValueAnimator.ofFloat(0f, maxScale - DEFAULT_SCALE ).apply {
+        duration = segmentTransformationDuration
+        addUpdateListener {
+            maxScaleOverhead = it.animatedValue as Float
+            invalidate()
+        }
+    }
+
     constructor(context: Context) : super(context)
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {
-        val a = context.obtainStyledAttributes(attrs, R.styleable.LoopLoader)
-
-        if (a.hasValue(R.styleable.LoopLoader_segmentPaintWidth))
-            segmentPaintWidth = a.getFloat(R.styleable.LoopLoader_segmentPaintWidth, segmentPaintWidth)
-        if (a.hasValue(R.styleable.LoopLoader_shadowPaintWidth))
-            shadowPaintWidth = a.getFloat(R.styleable.LoopLoader_shadowPaintWidth, shadowPaintWidth)
-        if (a.hasValue(R.styleable.LoopLoader_segmentRotationDuration))
-            segmentRotationDuration = a.getInt(R.styleable.LoopLoader_segmentRotationDuration, segmentRotationDuration.toInt()).toLong()
-        if (a.hasValue(R.styleable.LoopLoader_segmentTransformationDuration))
-            segmentTransformationDuration = a.getInt(R.styleable.LoopLoader_segmentTransformationDuration, segmentTransformationDuration.toInt()).toLong()
-        if (a.hasValue(R.styleable.LoopLoader_activeSegmentColor))
-            activeSegmentColor = a.getColor(R.styleable.LoopLoader_activeSegmentColor, activeSegmentColor)
-        if (a.hasValue(R.styleable.LoopLoader_passiveSegmentColor))
-            passiveSegmentColor = a.getColor(R.styleable.LoopLoader_passiveSegmentColor, passiveSegmentColor)
-        if (a.hasValue(R.styleable.LoopLoader_shadowColor))
-            shadowColor = a.getColor(R.styleable.LoopLoader_shadowColor, shadowColor)
-        if (a.hasValue(R.styleable.LoopLoader_numberOfSegments))
-            numberOfSegments = a.getInt(R.styleable.LoopLoader_numberOfSegments, numberOfSegments)
-        if (a.hasValue(R.styleable.LoopLoader_maxScale))
-            maxScale = a.getFloat(R.styleable.LoopLoader_maxScale, maxScale)
-        if (a.hasValue(R.styleable.LoopLoader_rotationDirection))
-            rotationDirection =
-                RotationDirection.values()[a.getInt(R.styleable.LoopLoader_rotationDirection, 0)]
-        a.recycle()
+        context.obtainStyledAttributes(attrs, R.styleable.LoopLoader).use { //requires min sdk 31!
+            segmentPaintWidth = it.getFloat(R.styleable.LoopLoader_ll_segmentPaintWidth, segmentPaintWidth)
+            shadowPaintWidth = it.getFloat(R.styleable.LoopLoader_ll_shadowPaintWidth, shadowPaintWidth)
+            segmentRotationDuration = it.getInt(R.styleable.LoopLoader_ll_segmentRotationDuration, segmentRotationDuration.toInt()).toLong()
+            segmentTransformationDuration = it.getInt(R.styleable.LoopLoader_ll_segmentTransformationDuration, segmentTransformationDuration.toInt()).toLong()
+            activeSegmentColor = it.getColor(R.styleable.LoopLoader_ll_activeSegmentColor, activeSegmentColor)
+            passiveSegmentColor = it.getColor(R.styleable.LoopLoader_ll_passiveSegmentColor, passiveSegmentColor)
+            shadowColor = it.getColor(R.styleable.LoopLoader_ll_shadowColor, shadowColor)
+            numberOfSegments = it.getInt(R.styleable.LoopLoader_ll_numberOfSegments, numberOfSegments)
+            maxScale = it.getFloat(R.styleable.LoopLoader_ll_maxScale, maxScale)
+            rotationDirection = RotationDirection.values()[it.getInt(R.styleable.LoopLoader_ll_rotationDirection, 0)]
+        }
     }
     constructor(context: Context, attrs: AttributeSet, defStyle: Int) : super(context, attrs, defStyle)
 
@@ -156,19 +186,10 @@ class LoopLoader: View {
         scaleAndDraw(
             canvas,
             if (isAnimatingEvenSegments) { {drawOddSegments(canvas, oddOffset)} } else { {drawEvenSegments(canvas, evenOffset)} },
-            if (isAnimatingEvenSegments) { {drawEvenSegments(canvas, getEvenActiveOffset())} } else { {drawOddSegments(canvas, getOddActiveOffset())} }
+            if (isAnimatingEvenSegments) { {drawEvenSegments(canvas, evenActiveOffset)} } else { {drawOddSegments(canvas, oddActiveOffset)} }
         )
 
     }
-
-    private fun getEvenActiveOffset() =
-        if (rotationDirection == RotationDirection.CLOCKWISE)
-            evenOffset + offsetRotationModifier else evenOffset - offsetRotationModifier
-
-    private fun getOddActiveOffset() =
-        if (rotationDirection == RotationDirection.CLOCKWISE)
-            oddOffset + offsetRotationModifier else oddOffset - offsetRotationModifier
-
 
     private fun scaleAndDraw(canvas: Canvas, passiveSegments: () -> Unit, activeSegments: () -> Unit) {
 
@@ -216,9 +237,14 @@ class LoopLoader: View {
         for (i in startIndex .. numberOfSegments step 2) {
             if (withShadow)
                 canvas.drawArc(rect, offset - NEGATIVE_SHADOW_OFFSET, segmentWidth - GAP_BETWEEN_SEGMENTS + SHADOW_OFFSET, false, shadowPaint)
+            setShader(paint)
             canvas.drawArc(rect, offset, segmentWidth - GAP_BETWEEN_SEGMENTS, false, paint)
             offset += segmentWidth * 2
         }
+    }
+
+    private fun setShader(paint: Paint) {
+        paint.shader = RadialGradient(rect.centerX(), rect.centerY(), rect.width(), intArrayOf(paint.color, shadowColor), floatArrayOf(0.6f, 1f), Shader.TileMode.DECAL)
     }
 
     fun startAnimation() {
@@ -246,44 +272,6 @@ class LoopLoader: View {
             start()
         }
     }
-
-    private val rotationAnimator = ValueAnimator.ofFloat(0f, segmentWidth * 2)
-        .apply {
-            duration = segmentRotationDuration
-            interpolator = AccelerateInterpolator()
-            addUpdateListener {
-                offsetRotationModifier = it.animatedValue as Float
-                invalidate()
-            }
-        }
-
-    private val passiveToActiveColorAnimator = ValueAnimator.ofArgb(passiveSegmentColor, activeSegmentColor)
-        .apply {
-            duration = segmentTransformationDuration
-            addUpdateListener {
-                actualActiveColor = it.animatedValue as Int
-                invalidate()
-            }
-        }
-
-    private val activeToPassiveColorAnimator = ValueAnimator.ofArgb(activeSegmentColor, passiveSegmentColor)
-        .apply {
-            duration = segmentTransformationDuration
-            addUpdateListener {
-                actualPassiveColor = it.animatedValue as Int
-                invalidate()
-            }
-        }
-
-    private val scaleAnimator = ValueAnimator.ofFloat(0f, maxScale - DEFAULT_SCALE )
-        .apply {
-            duration = segmentTransformationDuration
-            addUpdateListener {
-                maxScaleOverhead = it.animatedValue as Float
-                invalidate()
-            }
-        }
-
 
     fun endAnimation() {
         animationEndWasCalled = true
