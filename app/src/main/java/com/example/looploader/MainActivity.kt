@@ -1,29 +1,83 @@
 package com.example.looploader
 
+import android.annotation.SuppressLint
 import android.graphics.Color
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
+import androidx.appcompat.app.AppCompatActivity
 import com.example.lib.LoopLoader
+import com.example.looploader.databinding.ActivityMainBinding
+import com.google.android.material.slider.Slider
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        val loopLoader1 = findViewById<LoopLoader>(R.id.loop_loader1)
-        loopLoader1.startAnimation()
-        loopLoader1.numberOfSegments = 5 // wont work
-        loopLoader1.rotationDirection = LoopLoader.RotationDirection.CLOCKWISE
-        loopLoader1.segmentPaintWidth = 80f
-        loopLoader1.segmentRotationDuration = 500
-        loopLoader1.shadowPaintWidth = 80f
-        loopLoader1.setBackgroundColor(Color.BLACK)
+        binding.loopLoader1.apply {
+            numberOfSegments = 5 // wont work
+            rotationDirection = LoopLoader.RotationDirection.CLOCKWISE
+            segmentPaintWidth = 80F
+            shadowPaintWidth = 80f
+            setBackgroundColor(Color.BLACK)
+            startAnimation()
+        }
+        binding.loopLoader2.startAnimation()
+        binding.loopLoader3.startAnimation()
 
+        binding.numberOfSegmentsSlider.apply {
+            valueFrom = 2f
+            valueTo = 12f
+            stepSize = 2f
+            addOnSliderTouchListener(getOnSliderTouchListener { slider ->
+                binding.loopLoader1.apply {
+                    endAnimation()
+                    numberOfSegments = slider.value.toInt()
+                    startAnimation()
+                }
+            })
+        }
 
-        val loopLoader2 = findViewById<LoopLoader>(R.id.loop_loader2)
-        loopLoader2.startAnimation()
+        binding.transformationSpeedSlider.apply {
+            valueFrom = 50f
+            valueTo = 1000f
+            addOnSliderTouchListener(getOnSliderTouchListener { slider ->
+                binding.loopLoader1.apply {
+                    endAnimation()
+                    segmentTransformationDuration = slider.value.toLong()
+                    startAnimation()
+                }
+            })
+        }
 
-        val loopLoader3 = findViewById<LoopLoader>(R.id.loop_loader3)
-        loopLoader3.startAnimation()
+        binding.rotationSpeedSlider.apply {
+            valueFrom = 50f
+            valueTo = 5000f
+            addOnSliderTouchListener(getOnSliderTouchListener { slider ->
+                binding.loopLoader1.apply {
+                    endAnimation()
+                    segmentRotationDuration = slider.value.toLong()
+                    startAnimation()
+                }
+            })
+        }
+
+    }
+
+    private fun getOnSliderTouchListener(block : (Slider) -> Unit): Slider.OnSliderTouchListener {
+        return object : Slider.OnSliderTouchListener {
+
+            @SuppressLint("RestrictedApi")
+            override fun onStartTrackingTouch(slider: Slider) {}
+
+            @SuppressLint("RestrictedApi")
+            override fun onStopTrackingTouch(slider: Slider) {
+                block(slider)
+            }
+        }
     }
 }

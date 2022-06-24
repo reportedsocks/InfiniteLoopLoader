@@ -19,12 +19,13 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@color/blue"
-        app:activeSegmentColor="@color/yellow"
-        app:passiveSegmentColor="@android:color/holo_orange_dark"
-        app:shadowColor="#CD74490A"
-        app:numberOfSegments="4"
-        app:segmentPaintWidth="100"
-        app:segmentTransformationDuration="500"
+        app:ll_activeSegmentColor="@color/yellow"
+        app:ll_passiveSegmentColor="@android:color/holo_orange_dark"
+        app:ll_shadowColor="#CD74490A"
+        app:ll_numberOfSegments="4"
+        app:ll_segmentPaintWidth="40dp"
+        app:ll_segmentTransformationDuration="500"
+        app:ll_innerCircleColor="@android:color/holo_red_dark"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toEndOf="@id/loop_loader1"
         app:layout_constraintEnd_toStartOf="@id/loop_loader3"/>
@@ -34,17 +35,83 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:background="@color/light_gray"
-        app:activeSegmentColor="@color/black"
-        app:passiveSegmentColor="@android:color/darker_gray"
-        app:shadowColor="@android:color/transparent"
-        app:rotationDirection="counterclockwise"
-        app:numberOfSegments="8"
-        app:segmentPaintWidth="60"
-        app:maxScale="1.15"
-        app:segmentTransformationDuration="400"
+        app:ll_activeSegmentColor="@color/black"
+        app:ll_passiveSegmentColor="@android:color/darker_gray"
+        app:ll_shadowColor="@android:color/transparent"
+        app:ll_rotationDirection="counterclockwise"
+        app:ll_numberOfSegments="8"
+        app:ll_segmentPaintWidth="25dp"
+        app:ll_maxScale="1.15"
+        app:ll_segmentTransformationDuration="400"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toEndOf="@id/loop_loader2"
         app:layout_constraintEnd_toEndOf="parent"/>
+
+    <TextView
+        android:id="@+id/segmentsSliderLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Number os segments"
+        android:paddingHorizontal="20dp"
+        android:layout_marginTop="40dp"
+        android:textSize="20sp"
+        app:layout_constraintTop_toBottomOf="@id/loop_loader1"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <com.google.android.material.slider.Slider
+        android:id="@+id/numberOfSegmentsSlider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="20dp"
+        android:layout_marginTop="10dp"
+        android:value="6"
+        app:layout_constraintTop_toBottomOf="@id/segmentsSliderLabel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/transformationSpeedSliderLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Transformation speed"
+        android:paddingHorizontal="20dp"
+        android:layout_marginTop="40dp"
+        android:textSize="20sp"
+        app:layout_constraintTop_toBottomOf="@id/numberOfSegmentsSlider"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <com.google.android.material.slider.Slider
+        android:id="@+id/transformationSpeedSlider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:paddingHorizontal="20dp"
+        android:layout_marginTop="10dp"
+        android:value="200"
+        app:layout_constraintTop_toBottomOf="@id/transformationSpeedSliderLabel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/rotationSpeedSliderLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Rotation speed"
+        android:paddingHorizontal="20dp"
+        android:layout_marginTop="40dp"
+        android:textSize="20sp"
+        app:layout_constraintTop_toBottomOf="@id/transformationSpeedSlider"
+        app:layout_constraintStart_toStartOf="parent"/>
+
+    <com.google.android.material.slider.Slider
+        android:id="@+id/rotationSpeedSlider"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:value="700"
+        android:paddingHorizontal="20dp"
+        android:layout_marginTop="10dp"
+        app:layout_constraintTop_toBottomOf="@id/rotationSpeedSliderLabel"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
