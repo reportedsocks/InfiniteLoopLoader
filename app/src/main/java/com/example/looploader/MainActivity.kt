@@ -4,26 +4,30 @@ import android.graphics.Color
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.example.lib.LoopLoader
+import com.example.looploader.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
+
+    private lateinit var binding: ActivityMainBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
-        val loopLoader1 = findViewById<LoopLoader>(R.id.loop_loader1)
-        loopLoader1.startAnimation()
-        loopLoader1.numberOfSegments = 5 // wont work
-        loopLoader1.rotationDirection = LoopLoader.RotationDirection.CLOCKWISE
-        loopLoader1.segmentPaintWidth = 80f
-        loopLoader1.segmentRotationDuration = 500
-        loopLoader1.shadowPaintWidth = 80f
-        loopLoader1.setBackgroundColor(Color.BLACK)
+        binding.loopLoader1.apply {
+            numberOfSegments = 5 // wont work
+            rotationDirection = LoopLoader.RotationDirection.CLOCKWISE
+            segmentPaintWidth = 80f
+            segmentRotationDuration = 500
+            shadowPaintWidth = 80f
+            activeSegmentColor = Color.CYAN
+            setBackgroundColor(Color.BLACK)
+            startAnimation()
+        }
 
+        binding.loopLoader2.startAnimation()
 
-        val loopLoader2 = findViewById<LoopLoader>(R.id.loop_loader2)
-        loopLoader2.startAnimation()
-
-        val loopLoader3 = findViewById<LoopLoader>(R.id.loop_loader3)
-        loopLoader3.startAnimation()
+        binding.loopLoader3.startAnimation()
     }
 }

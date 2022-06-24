@@ -223,10 +223,10 @@ class LoopLoader: View {
 
     fun startAnimation() {
         AnimatorSet().apply {
-            play(getPassiveToActiveColorAnimator())
-                .with(getActiveToPassiveColorAnimator())
-                .with(getScaleAnimator())
-                .before(getRotationAnimator())
+            play(passiveToActiveColorAnimator)
+                .with(activeToPassiveColorAnimator)
+                .with(scaleAnimator)
+                .before(rotationAnimator)
 
             addListener(object: Animator.AnimatorListener {
                 override fun onAnimationStart(animator: Animator?) {}
@@ -247,7 +247,7 @@ class LoopLoader: View {
         }
     }
 
-    private fun getRotationAnimator() = ValueAnimator.ofFloat(0f, segmentWidth * 2)
+    private val rotationAnimator = ValueAnimator.ofFloat(0f, segmentWidth * 2)
         .apply {
             duration = segmentRotationDuration
             interpolator = AccelerateInterpolator()
@@ -257,7 +257,7 @@ class LoopLoader: View {
             }
         }
 
-    private fun getPassiveToActiveColorAnimator() = ValueAnimator.ofArgb(passiveSegmentColor, activeSegmentColor)
+    private val passiveToActiveColorAnimator = ValueAnimator.ofArgb(passiveSegmentColor, activeSegmentColor)
         .apply {
             duration = segmentTransformationDuration
             addUpdateListener {
@@ -266,7 +266,7 @@ class LoopLoader: View {
             }
         }
 
-    private fun getActiveToPassiveColorAnimator() = ValueAnimator.ofArgb(activeSegmentColor, passiveSegmentColor)
+    private val activeToPassiveColorAnimator = ValueAnimator.ofArgb(activeSegmentColor, passiveSegmentColor)
         .apply {
             duration = segmentTransformationDuration
             addUpdateListener {
@@ -275,7 +275,7 @@ class LoopLoader: View {
             }
         }
 
-    private fun getScaleAnimator() = ValueAnimator.ofFloat(0f, maxScale - DEFAULT_SCALE )
+    private val scaleAnimator = ValueAnimator.ofFloat(0f, maxScale - DEFAULT_SCALE )
         .apply {
             duration = segmentTransformationDuration
             addUpdateListener {
